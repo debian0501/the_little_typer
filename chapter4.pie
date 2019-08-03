@@ -1,0 +1,23 @@
+#lang pie
+
+
+(claim a
+    (Pair Nat Atom))
+(define a
+    (cons  1 'hi))
+
+(claim swap-gen 
+    (Pi ((A U) 
+        (B U))
+        (-> (Pair A B)
+            (Pair B A))))
+(define swap-gen
+    (lambda (a b)
+        (lambda (p) 
+            (cons (cdr p) (car p)))))
+
+(claim swap 
+    (-> (Pair Nat Atom)
+        (Pair Atom Nat)))
+(define swap
+    (swap-gen Nat Atom))

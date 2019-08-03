@@ -1,0 +1,75 @@
+#lang pie
+(claim + 
+    (-> Nat Nat 
+        Nat))
+(define + 
+    (lambda (n j) 
+        (iter-Nat n j 
+            (lambda (smaller) 
+            (add1 smaller)))))
+
+(claim gaus 
+    (-> Nat 
+        Nat))
+(define gaus
+    (lambda (n)
+        (rec-Nat n 0
+            (lambda (smaller acc)
+                (+ (add1 smaller) acc)))))
+
+(claim * 
+    (-> Nat Nat
+        Nat))
+(define * 
+    (lambda (n j)
+        (rec-Nat n 0
+            (lambda (smaller acc)
+                (+ j acc)))))
+
+(claim ^
+    (-> Nat Nat 
+        Nat))
+(define ^
+    (lambda (n j)
+        (rec-Nat j 1
+            (lambda (smaller acc)
+                (* n acc)))))
+
+;;;(claim min
+;;;    (-> Nat Nat 
+;;;        Nat))
+;;;(define min
+;;;    (lambda (x y)
+;;;        (rec-Nat (- x y) 
+;;;            0
+;;;            (lambda (smaller acc)
+;;;                y))))
+
+
+(claim min1
+    (-> Nat
+        Nat))
+(define min1
+    (lambda (x)
+        (rec-Nat x 
+            0
+            (lambda (smaller res)
+                smaller))))
+
+(claim -
+    (-> Nat Nat
+        Nat))
+(define - 
+    (lambda (x y)
+        (rec-Nat y x
+            (lambda (smaller res)
+                (min1 res)))))
+
+(claim max 
+    (-> Nat Nat
+        Nat))
+(define max
+    (lambda (x y)
+        (rec-Nat (- x y) y
+            (lambda (smaller res)
+                x))))

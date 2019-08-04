@@ -1,0 +1,7 @@
+#lang pie
+
+;; Exercise 5.4
+;;
+;; Define a function called sort-List-Nat which takes one (List Nat) argument
+;; and evaluates to a (List Nat) consisting of the elements from the list
+;; argument sorted in ascending order.

@@ -1,0 +1,52 @@
+#lang pie
+
+;; Exercise 4.2
+;;
+;; Define a function called compose that takes (in addition to the type
+;; arguments A, B, C) an argument of type (-> A B) and an argument of
+;; type (-> B C) that and evaluates to a value of type (-> A C), the function
+;; composition of the arguments.
+
+(claim compose
+    (Pi ((A U)
+        (B U)
+        (C U))
+        (-> (-> A B )
+            (-> B C )
+            (-> A C))))
+(define compose
+    (lambda (A B C)
+        (lambda (f g)
+            (lambda (a) 
+                (g (f a))))))
+
+(claim iszero?
+  (-> Nat 
+  Nat))
+
+(define iszero?
+  (lambda (n)
+    (rec-Nat n
+      0
+      (lambda (n-1 notzero)
+        1))))
+
+(claim twin
+    (-> Nat 
+        (Pair Nat Nat)))
+
+(define twin
+    (lambda (n)
+        (cons n n)))
+
+(claim double
+  (-> Nat 
+    (Pair Nat Nat)))
+(define double
+  (compose Nat Nat (Pair Nat Nat) iszero? twin))
+
+(check-same (Pair Nat Nat) (double 100) (cons 1 1))
+(check-same (Pair Nat Nat) (double 0) (cons 0 0))
+
+
+

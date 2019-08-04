@@ -1,0 +1,17 @@
+#lang pie
+
+;; Exercise 3.2
+;;
+;; Rewrite the definition of + (in frame 3.27) using the rec-Nat eliminator instead of the iter-Nat eliminator.
+(claim + 
+    (-> Nat Nat 
+        Nat))
+(define + 
+    (lambda (n j) 
+        (rec-Nat n j 
+            (lambda (smaller acc) 
+                (add1 acc)))))
+
+(check-same Nat (+ 3 0) 3)
+(check-same Nat (+ 0 5) 5)
+(check-same Nat (+ 12 5) 17)

@@ -1,0 +1,4 @@
+;; Exercise 5.1
+;;
+;; Define a function called sum-List that takes one List Nat argument and
+;; evaluates to a Nat, the sum of the Nats in the list.

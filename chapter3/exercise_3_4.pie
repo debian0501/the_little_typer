@@ -1,0 +1,38 @@
+#lang pie
+
+(claim min1
+    (-> Nat
+        Nat))
+(define min1
+    (lambda (x)
+        (rec-Nat x 
+            0
+            (lambda (smaller res)
+                smaller))))
+
+(claim -
+    (-> Nat Nat
+        Nat))
+(define - 
+    (lambda (x y)
+        (rec-Nat y x
+            (lambda (smaller res)
+                (min1 res)))))
+
+;; Exercise 3.4
+;;
+;; Define a function called max that takes two Nat arguments and evaluates to a Nat.
+;;
+;; max evaluates to the larger of the two passed arguments.
+(claim max 
+    (-> Nat Nat
+        Nat))
+(define max
+    (lambda (x y)
+        (rec-Nat (- x y) y
+            (lambda (smaller res)
+                x))))
+
+(check-same Nat (max 0 5) 5)
+(check-same Nat (max 1 1) 1)
+(check-same Nat (max 20 19) 20)

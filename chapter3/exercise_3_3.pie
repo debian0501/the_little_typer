@@ -1,0 +1,37 @@
+#lang pie
+
+(claim + 
+    (-> Nat Nat 
+        Nat))
+(define + 
+    (lambda (n j) 
+        (iter-Nat n j 
+            (lambda (smaller) 
+            (add1 smaller)))))
+
+(claim * 
+    (-> Nat Nat
+        Nat))
+(define * 
+    (lambda (n j)
+        (rec-Nat n 0
+            (lambda (smaller acc)
+                (+ j acc)))))
+
+;; Exercise 3.3
+;;
+;; Define a function called ^ that takes two Nat arguments and evaluates to a Nat.
+;;
+;; exp evaluates to the exponentiation, a^b, of the two passed arguments.
+(claim ^
+    (-> Nat Nat 
+        Nat))
+(define ^
+    (lambda (n j)
+        (rec-Nat j 1
+            (lambda (smaller acc)
+                (* n acc)))))
+
+(check-same Nat (^ 0 5) 0)
+(check-same Nat (^ 1 5) 1)
+(check-same Nat (^ 3 3) 27)

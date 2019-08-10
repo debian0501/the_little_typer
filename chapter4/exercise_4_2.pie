@@ -20,10 +20,29 @@
             (lambda (a) 
                 (g (f a))))))
 
+(claim step
+    (-> Nat 
+        Atom))
+(define step
+    (lambda (n)
+        (which-Nat n 'nil
+            (lambda (n)
+                't))
+        ))
+
+(claim at-least-two?
+    (-> Nat 
+        Atom))
+(define at-least-two?
+    (lambda (n)
+        (which-Nat n 'nil
+            (lambda (n)
+                (step n))
+            )))
+
 (claim iszero?
   (-> Nat 
   Nat))
-
 (define iszero?
   (lambda (n)
     (rec-Nat n
@@ -32,21 +51,21 @@
         1))))
 
 (claim twin
-    (-> Nat 
-        (Pair Nat Nat)))
-
+    (-> Atom 
+        (Pair Atom Atom)))
 (define twin
     (lambda (n)
         (cons n n)))
 
-(claim double
+(claim compTest
   (-> Nat 
-    (Pair Nat Nat)))
-(define double
-  (compose Nat Nat (Pair Nat Nat) iszero? twin))
+    (Pair Atom Atom)))
+(define compTest
+  (compose Nat Atom (Pair Atom Atom) at-least-two? twin))
 
-(check-same (Pair Nat Nat) (double 100) (cons 1 1))
-(check-same (Pair Nat Nat) (double 0) (cons 0 0))
+(check-same (Pair Atom Atom) (compTest 100) (cons 't 't))
+(check-same (Pair Atom Atom) (compTest 2) (cons 't 't))
+(check-same (Pair Atom Atom) (compTest 0) (cons 'nil 'nil))
 
 
 

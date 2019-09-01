@@ -1,0 +1,61 @@
+#lang pie
+
+(claim if
+    (Pi ((A U))
+        (-> Nat A A
+            A)))
+(define if
+    (lambda (A)
+        (lambda (e then else)
+            (which-Nat e
+                else
+                (lambda (_) then)))))
+
+(claim filter-list-step
+    (Pi ((E U))
+        (-> (-> E Nat)
+            (-> E (List E) (List E)
+                (List E)))))
+(define filter-list-step
+    (lambda (E)
+        (lambda (p)
+            (lambda (e es filtered)
+                (if (List E) (p e)
+                    (:: e filtered)
+                    filtered)))))
+
+(claim not-zero
+    (-> Nat 
+        Nat))
+(define not-zero
+    (lambda (n)
+        (which-Nat n
+            0
+            (lambda (_) 1))))
+
+;; Exercise 5.3
+;;
+;; Define a function called filter-list which takes (in addition to the type
+;; argument for the list element) one (-> E Nat) argument representing a
+;; predicate and one (List E) argument.
+;;
+;; The function evaluates to a (List E) consisting of elements from the list
+;; argument where the predicate is true.
+;;
+;; Consider the predicate to be false for an element if it evaluates to zero,
+;; and true otherwise.
+
+(claim filter-list
+    (Pi ((E U))
+        (-> (-> E Nat) (List E) 
+            (List E))))
+(define filter-list
+    (lambda (E)
+        (lambda (p es)
+            (rec-List es 
+                    (the (List E) nil)
+                    (filter-list-step E p)))))
+
+(check-same (List Nat) (filter-list Nat not-zero (:: 0 (:: 1 (:: 2 nil)))) (:: 1 (:: 2 nil)))
+(check-same (List Nat) (filter-list Nat not-zero (:: 0 (:: 1 (:: 0 nil)))) (:: 1 nil))
+(check-same (List Nat) (filter-list Nat not-zero (:: 0 (:: 0 (:: 0 nil)))) nil)

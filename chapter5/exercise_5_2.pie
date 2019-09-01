@@ -1,0 +1,34 @@
+#lang pie
+
+(claim maybe-Step
+    (Pi ((E U))
+        (-> E (List E) (-> E E)
+            (-> E E))))
+(define maybe-Step
+    (lambda (E)
+        (lambda (e es acc)
+            (rec-List es
+                (the (-> E E) (lambda (_) e))
+                (lambda (_ _ _) acc)))))
+
+;; Exercise 5.2
+;;
+;; Define a function called maybe-last which takes (in addition to the type
+;; argument for the list element) one (List E) argument and one E argument and
+;; evaluates to an E with value of either the last element in the list, or the
+;; value of the second argument if the list is empty.
+
+(claim maybe-last
+    (Pi ((E U))
+        (-> (List E) E
+            E)))
+(define maybe-last
+    (lambda (E)
+        (lambda (es)
+            (rec-List es 
+                (the (-> E E) (lambda (default) default))
+                (maybe-Step E)))))
+
+(check-same Nat (maybe-last Nat nil 0) 0)
+(check-same Nat (maybe-last Nat (:: 1 nil) 0) 1)
+(check-same Nat (maybe-last Nat (:: 1 (:: 2 nil)) 0) 2)

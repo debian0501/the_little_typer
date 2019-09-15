@@ -1,0 +1,73 @@
+#lang pie
+
+(claim + 
+  (-> Nat Nat 
+    Nat))
+(define + 
+  (lambda (n j) 
+    (rec-Nat n j 
+      (lambda (smaller acc) 
+        (add1 acc)))))
+
+;; Exercise 7.2
+;;
+;; Define a function called append that takes an argument of type (Vec E n) and an
+;; argument of type (Vect E m) and evaluates to a value of type (Vec (+ n m)), the
+;; result of appending the elements of the second argument to the end of the first.
+
+(claim mot-append
+  (-> U Nat Nat
+    U ))
+
+(define mot-append
+  (lambda (E m n)
+    (-> (Vec E n) (Vec E m)
+      (Vec E ( + n m)))))
+
+(claim base-append
+  (Pi ((E U)
+       (n Nat))
+    (-> (Vec E zero) (Vec E n)
+      (Vec E n))))
+
+(define base-append
+  (lambda (E n)
+    (lambda (_ ns)
+      ns
+      )))
+      
+
+(claim step-append
+  (Pi ([E U]
+       [n Nat]
+       [l Nat])
+    (-> (mot-append E n l)
+      (mot-append E n (add1 l)))))
+
+(define step-append
+  (lambda (E n l)
+    (lambda (append-l)
+      (lambda (ls ns)
+        (vec:: (head ls) (append-l (tail ls) ns))))))
+
+
+(claim append
+  (Pi ([E U]
+       [n Nat]
+       [m Nat])
+    (-> (Vec E n)
+        (Vec E m)
+      (Vec E (+ n m)))))
+
+(define append
+  (lambda (E m n)
+    (ind-Nat m
+      (mot-append E n)
+      (base-append E n)
+      (step-append E n))))
+
+(check-same (Vec Atom 3)
+  (append Atom 1 2
+    (vec:: 'a vecnil)
+    (vec:: 'b (vec:: 'c vecnil)))
+  (vec:: 'a (vec:: 'b (vec:: 'c vecnil))))

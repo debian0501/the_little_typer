@@ -1,0 +1,59 @@
+#lang pie
+
+;; Exercise 7.1
+;;
+;; Define a function called zip that takes an argument of type (Vec A n) and a
+;; second argument of type (Vec B n) and evaluates to a value of type (Vec (Pair A B) n),
+;; the result of zipping the first and second arguments.
+
+(claim zip
+  (Pi ([A U]
+       [B U]
+       [l Nat])
+  (-> (Vec A l) (Vec B l)
+      (Vec (Pair A B) l))))
+
+(claim mot-zip
+  (-> U 
+      U Nat
+      U ))
+(define mot-zip
+  (lambda (A B k)
+    (-> (Vec A k)
+        (Vec B k)
+        (Vec (Pair A B) k))))
+
+(claim base-zip
+  (Pi ([A U]
+       [B U])
+  (mot-zip A B zero)))
+(define base-zip
+  (lambda (A B)
+    (lambda (as bs)
+      (the (Vec (Pair A B) zero) vecnil))))
+
+(claim zip-step
+  (Pi ([A U]
+       [B U]
+       [n Nat])
+    (-> (mot-zip A B n)
+        ( mot-zip A B (add1 n)))))
+(define zip-step
+  (lambda (A B n)
+    (lambda (last)
+      (lambda (as bs)
+        (vec:: (cons (head as) (head bs)) (last (tail as) (tail bs)))))))
+
+(define zip
+  (lambda (A B l)
+    (ind-Nat l
+      (mot-zip A B)
+      (base-zip A B)
+      (zip-step A B)
+     )
+  )
+)
+(check-same (Vec (Pair Nat Nat) 2) (zip Nat Nat 2 (vec:: 1 (vec:: 2 vecnil)) (vec:: 1 (vec:: 2 vecnil)))
+  (vec:: (cons 1 1) (vec:: (cons 2 2) vecnil)))
+(check-same (Vec (Pair Atom Atom) 2) (zip Atom Atom 2 (vec:: 'adam (vec:: 'susie vecnil)) (vec:: 'eva (vec:: 'strolch vecnil)))
+  (vec:: (cons 'adam 'eva) (vec:: (cons 'susie 'strolch) vecnil)))

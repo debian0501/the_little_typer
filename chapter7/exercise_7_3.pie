@@ -1,0 +1,69 @@
+#lang pie
+
+(claim + 
+  (-> Nat Nat 
+    Nat))
+(define + 
+  (lambda (n j) 
+    (rec-Nat n j 
+      (lambda (smaller acc) 
+        (add1 acc)))))
+
+
+;; Exercise 7.3
+;;
+;; Define a function called drop-last-k that takes an argument of type (Vec E ?) and
+;; evaluates to a value of type (Vec E ?), the result of dropping the last k elements
+;; from the first argument.
+;;
+;; NB: The type of the function should guarantee that we can't drop more elements
+;; than there are in the first argument.
+
+(claim mot-drop-last-k
+  (-> U Nat Nat
+    U))
+(define mot-drop-last-k
+  (lambda (E k n)
+    (-> (Vec E (+ n k))
+      (Vec E n ))))
+
+(claim base-drop-last-k
+  (Pi ([E U]
+       [k Nat])
+    (-> (Vec E k)
+      (Vec E zero))))
+
+(define base-drop-last-k
+  (lambda (E k)
+    (lambda (_)
+      vecnil)))
+
+(claim step-drop-last-k
+  (Pi ([E U]
+       [k Nat]
+       [l Nat])
+    (-> (mot-drop-last-k E k l)
+      (mot-drop-last-k E k (add1 l)))))
+(define step-drop-last-k
+  (lambda (E k l)
+    (lambda (drop-last-k-l)
+      (lambda (vs)
+        (vec:: (head vs) (drop-last-k-l (tail vs)))))))
+
+(claim drop-last-k
+  (Pi ([E U]
+       [k Nat]
+       [n Nat])
+    (-> (Vec E (+ n k)) 
+      (Vec E n))))
+
+(define drop-last-k
+  (lambda (E k n)
+    (ind-Nat n
+      (mot-drop-last-k E k)
+      (base-drop-last-k E k)
+      (step-drop-last-k E k))))
+
+(check-same (Vec Nat 1)
+  (drop-last-k Nat 2 1 (vec:: 1 (vec:: 2 (vec:: 3 vecnil))))
+  (vec:: 1 vecnil))
